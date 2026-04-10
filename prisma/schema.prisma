@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum StudentStatus {
+  SEEKING
+  PLACED
+}
+
+model Company {
+  id        String    @id @default(cuid())
+  name      String
+  website   String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  students  Student[]
+}
+
+model Student {
+  id           String        @id @default(cuid())
+  displayName  String
+  status       StudentStatus @default(SEEKING)
+  companyId    String?
+  company      Company?      @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  note         String?
+  createdBySub String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
